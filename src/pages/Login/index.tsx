@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useLoginQuery } from '@/api/hooks/useLogin';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
@@ -85,9 +85,6 @@ export const LoginPage = () => {
           {isLoading ? '로그인 중...' : '로그인'}
         </Button>
         {loginError && <ErrorMessage>{loginError.message}</ErrorMessage>}
-        <SignUpLinkWrapper>
-          <SignUpLink to={RouterPath.register}>회원가입</SignUpLink>
-        </SignUpLinkWrapper>
       </FormWrapper>
     </Wrapper>
   );
@@ -114,19 +111,6 @@ const FormWrapper = styled.article`
   @media screen and (min-width: ${breakpoints.sm}) {
     border: 1px solid rgba(0, 0, 0, 0.12);
     padding: 60px 52px;
-  }
-`;
-
-const SignUpLinkWrapper = styled.div`
-  margin-top: 16px;
-  text-align: center;
-`;
-
-const SignUpLink = styled(Link)`
-  color: #1a73e8;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
   }
 `;
 
