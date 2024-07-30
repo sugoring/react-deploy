@@ -22,7 +22,7 @@ const fetchProductOptions = async ({
   return data;
 };
 
-export const useGetProductOptions = (
+export const useProductOptionsQuery = (
   { productId }: ProductOptionsRequestParams,
   options?: Omit<UseQueryOptions<ProductOption[], AxiosError, ProductOption[], [string, number]>, 'queryKey' | 'queryFn'>
 ): UseQueryResult<ProductOption[], AxiosError> => {
