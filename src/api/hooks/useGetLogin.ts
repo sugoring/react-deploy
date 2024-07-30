@@ -1,5 +1,8 @@
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+
+import { fetchInstance } from '../instance';
 
 type LoginRequestBody = {
   email: string;
@@ -11,25 +14,18 @@ type LoginSuccessResponse = {
   token: string;
 };
 
-const BASE_URL = 'http://localhost:3000';
-
 const login = async (loginData: LoginRequestBody): Promise<LoginSuccessResponse> => {
-  const response = await fetch(`${BASE_URL}/api/members/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loginData),
-  });
-
-  if (!response.ok) {
-    if (response.status === 403) {
-      throw new Error('Invalid email or password');
+  try {
+    const { data } = await fetchInstance.post<LoginSuccessResponse>('/api/members/login', loginData);
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // 서버에서 에러 메시지를 제공하는 경우
+      const errorMessage = error.response?.data?.message || '로그인 중 오류가 발생했습니다.';
+      throw new Error(errorMessage);
     }
-    throw new Error('An error occurred during login');
+    throw new Error('네트워크 오류가 발생했습니다.');
   }
-
-  return response.json();
 };
 
 export const useLogin = (
