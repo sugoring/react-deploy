@@ -25,7 +25,7 @@ export type GoodsDetailOptionItemData = {
   key: string;
   value: string;
   level: number;
-  options: GoodsDetailOptionItemData[]; // 재귀적으로 동일한 구조를 가질 수 있음
+  options: GoodsDetailOptionItemData[]; 
   id?: number;
   price?: number;
   stockQuantity: number;
@@ -53,4 +53,14 @@ export type MessageCardTemplateData = {
   defaultTextMessage: string;
   thumbUrl: string;
   imageUrl: string;
+};
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  email: string;
+  token: string;
 };

@@ -2,21 +2,14 @@ import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
+import type { LoginRequest, LoginResponse } from '@/types';
+
 import { fetchInstance } from '../instance';
 
-type LoginRequestBody = {
-  email: string;
-  password: string;
-};
 
-type LoginSuccessResponse = {
-  email: string;
-  token: string;
-};
-
-const login = async (loginData: LoginRequestBody): Promise<LoginSuccessResponse> => {
+const login = async (loginData: LoginRequest): Promise<LoginResponse> => {
   try {
-    const { data } = await fetchInstance.post<LoginSuccessResponse>('/api/members/login', loginData);
+    const { data } = await fetchInstance.post<LoginResponse>('/api/members/login', loginData);
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -29,9 +22,9 @@ const login = async (loginData: LoginRequestBody): Promise<LoginSuccessResponse>
 };
 
 export const useLoginMutation = (
-  options?: UseMutationOptions<LoginSuccessResponse, Error, LoginRequestBody>,
+  options?: UseMutationOptions<LoginResponse, Error, LoginRequest>,
 ) => {
-  return useMutation<LoginSuccessResponse, Error, LoginRequestBody>({
+  return useMutation<LoginResponse, Error, LoginRequest>({
     mutationFn: login,
     ...options,
   });
