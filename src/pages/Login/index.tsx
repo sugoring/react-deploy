@@ -24,7 +24,7 @@ export const LoginPage = () => {
       setSuccessMessage(message);
       navigate(RouterPath.login, { replace: true, state: {} });
     }
-  }, [location, navigate]);
+  }, [location.state?.successMessage, navigate]);
 
   const { mutate: login, isPending } = useLogin({
     onSuccess: (data) => {
