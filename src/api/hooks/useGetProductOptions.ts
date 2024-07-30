@@ -1,7 +1,8 @@
-import type { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
+import { fetchInstance } from '../instance';  
 
 export interface ProductOption {
   id: number;
@@ -17,25 +18,14 @@ export interface ProductOptionsRequestParams {
 const fetchProductOptions = async ({
   productId,
 }: ProductOptionsRequestParams): Promise<ProductOption[]> => {
-  const response = await fetch(`${BASE_URL}/api/products/${productId}/options`);
-
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('Product not found');
-    }
-    throw new Error('Failed to fetch product options');
-  }
-
-  return response.json();
+  const { data } = await fetchInstance.get<ProductOption[]>(`/api/products/${productId}/options`);
+  return data;
 };
 
 export const useGetProductOptions = (
   { productId }: ProductOptionsRequestParams,
-  options?: Omit<
-    UseQueryOptions<ProductOption[], Error, ProductOption[], [string, number]>,
-    'queryKey' | 'queryFn'
-  >,
-) => {
+  options?: Omit<UseQueryOptions<ProductOption[], AxiosError, ProductOption[], [string, number]>, 'queryKey' | 'queryFn'>
+): UseQueryResult<ProductOption[], AxiosError> => {
   return useQuery({
     queryKey: ['productOptions', productId],
     queryFn: () => fetchProductOptions({ productId }),
