@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { useCategoriesQuery } from '@/api/hooks/useCategory';
+import { useCategoriesQuery } from '@/api/hooks/useCategories';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
