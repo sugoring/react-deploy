@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useGetRegister } from '@/api/hooks/useGetRegister';
+import { useRegisterMutation } from '@/api/hooks/useGetRegister';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
@@ -15,7 +15,7 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const { mutateAsync: register, isPending } = useGetRegister();
+  const { mutateAsync: register, isPending } = useRegisterMutation();
 
   const handleConfirm = async () => {
     if (!email || !password) {
@@ -38,7 +38,6 @@ export const RegisterPage = () => {
       }
     }
   };
-
   return (
     <Wrapper>
       <Logo src={KAKAO_LOGO} alt="카카오 CI" />

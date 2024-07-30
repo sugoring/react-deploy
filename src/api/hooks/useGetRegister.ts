@@ -31,7 +31,7 @@ const register = async (registerData: RegisterRequestBody): Promise<RegisterSucc
   }
 };
 
-export const useGetRegister = (
+export const useRegisterMutation = (
   options?: UseMutationOptions<RegisterSuccessResponse, Error, RegisterRequestBody>,
 ) => {
   return useMutation<RegisterSuccessResponse, Error, RegisterRequestBody>({
