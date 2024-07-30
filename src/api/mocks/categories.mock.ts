@@ -2,41 +2,31 @@ import { rest } from 'msw';
 
 import type { CategoryData } from '@/types';
 
-export const CATEGORIES_MOCK_DATA: CategoryData[] = [
+// 모의 카테고리 데이터
+const mockCategories: CategoryData[] = [
   {
-    id: 2920,
-    name: '생일',
-    description: '감동을 높여줄 생일 선물 리스트',
-    color: '#5949a3',
-    imageUrl:
-      'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png',
+    id: 91,
+    name: "카테고리1",
+    color: "#FF5733",
+    imageUrl: "https://example.com/category1.jpg",
+    description: "카테고리1 설명"
   },
   {
-    id: 2930,
-    name: '교환권',
-    description: '놓치면 후회할 교환권 특가',
-    color: '#9290C3',
-    imageUrl:
-      'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Fst.kakaocdn.net%2Fproduct%2Fgift%2Fproduct%2F20240131153049_5a22b137a8d346e9beb020a7a7f4254a.jpg',
+    id: 92,
+    name: "카테고리2",
+    color: "#33FF57",
+    imageUrl: "https://example.com/category2.jpg",
+    description: "카테고리2 설명"
   },
-  // 추가 카테고리 데이터...
+  // 필요에 따라 더 많은 카테고리 추가
 ];
 
-export const getCategoriesPath = () => '/api/categories';
-
+// 카테고리 목록 조회 API 모킹
 export const categoriesMockHandler = [
-  rest.get(getCategoriesPath(), (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(CATEGORIES_MOCK_DATA));
-  }),
-
-  rest.get('/api/categories/:categoryId', (req, res, ctx) => {
-    const { categoryId } = req.params;
-    const category = CATEGORIES_MOCK_DATA.find((c) => c.id.toString() === categoryId);
-
-    if (category) {
-      return res(ctx.status(200), ctx.json(category));
-    } else {
-      return res(ctx.status(404), ctx.json({ message: 'Category not found' }));
-    }
+  rest.get('/api/categories', (_, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(mockCategories)
+    );
   }),
 ];
