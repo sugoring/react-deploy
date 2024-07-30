@@ -1,7 +1,8 @@
-import type { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
+import { fetchInstance } from '../instance';
 
 export interface ProductDetail {
   id: number;
@@ -18,22 +19,14 @@ export interface ProductDetailRequestParams {
 const fetchProductDetail = async ({
   productId,
 }: ProductDetailRequestParams): Promise<ProductDetail> => {
-  const response = await fetch(`${BASE_URL}/api/products/${productId}`);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch product detail');
-  }
-
-  return response.json();
+  const { data } = await fetchInstance.get<ProductDetail>(`/api/products/${productId}`);
+  return data;
 };
 
 export const useGetProductDetail = (
   { productId }: ProductDetailRequestParams,
-  options?: Omit<
-    UseQueryOptions<ProductDetail, Error, ProductDetail, [string, number]>,
-    'queryKey' | 'queryFn'
-  >,
-) => {
+  options?: Omit<UseQueryOptions<ProductDetail, AxiosError, ProductDetail, [string, number]>, 'queryKey' | 'queryFn'>
+): UseQueryResult<ProductDetail, AxiosError> => {
   return useQuery({
     queryKey: ['productDetail', productId],
     queryFn: () => fetchProductDetail({ productId }),
