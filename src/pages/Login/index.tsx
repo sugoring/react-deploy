@@ -1,19 +1,21 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useLoginMutation } from '@/api/hooks/useLogin';
+import { useLoginQuery } from '@/api/hooks/useLogin';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
+import type { LoginResponse } from '@/types';
 import { authSessionStorage } from '@/utils/storage';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [authCode, setAuthCode] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,26 +28,41 @@ export const LoginPage = () => {
     }
   }, [location.state?.successMessage, navigate]);
 
-  const { mutate: login, isPending } = useLoginMutation({
-    onSuccess: (data) => {
+  const onLoginSuccess = useCallback(
+    (data: LoginResponse) => {
       authSessionStorage.set(data.token);
       navigate(RouterPath.home);
     },
-    onError: (error) => {
-      // 에러 처리 로직은 제거하거나 주석 처리합니다.
-      console.error('Login error:', error);
-    },
+    [navigate],
+  );
+
+  const {
+    refetch: login,
+    isLoading,
+    error: loginError,
+  } = useLoginQuery(authCode, {
+    enabled: false,
   });
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!email || !password) {
       alert('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
-    login({ email, password });
-  };
+    // 여기서 이메일과 비밀번호를 사용하여 인증 코드를 얻는 로직이 필요합니다.
+    const code = 'sample_auth_code'; // 이 부분은 실제 인증 코드 획득 로직으로 대체해야 합니다.
+    setAuthCode(code);
 
+    try {
+      const result = await login();
+      if (result.data) {
+        onLoginSuccess(result.data);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
   return (
     <Wrapper>
       <Logo src={KAKAO_LOGO} alt="카카오 CI" />
@@ -64,9 +81,10 @@ export const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Spacing height={{ initial: 40, sm: 60 }} />
-        <Button onClick={handleConfirm} disabled={isPending}>
-          {isPending ? '로그인 중...' : '로그인'}
+        <Button onClick={handleConfirm} disabled={isLoading}>
+          {isLoading ? '로그인 중...' : '로그인'}
         </Button>
+        {loginError && <ErrorMessage>{loginError.message}</ErrorMessage>}
         <SignUpLinkWrapper>
           <SignUpLink to={RouterPath.register}>회원가입</SignUpLink>
         </SignUpLinkWrapper>
@@ -74,7 +92,6 @@ export const LoginPage = () => {
     </Wrapper>
   );
 };
-
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -116,5 +133,11 @@ const SignUpLink = styled(Link)`
 const SuccessMessage = styled.div`
   color: green;
   margin-bottom: 20px;
+  text-align: center;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 10px;
   text-align: center;
 `;

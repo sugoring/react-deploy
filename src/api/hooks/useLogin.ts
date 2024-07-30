@@ -1,30 +1,28 @@
-import type { UseMutationOptions } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import type { UseQueryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import type { LoginRequest, LoginResponse } from '@/types';
+import type { LoginResponse } from '@/types';
 
 import { fetchInstance } from '../instance';
 
-const login = async (loginData: LoginRequest): Promise<LoginResponse> => {
-  try {
-    const { data } = await fetchInstance.post<LoginResponse>('/api/members/login', loginData);
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      // 서버에서 에러 메시지를 제공하는 경우
-      const errorMessage = error.response?.data?.message || '로그인 중 오류가 발생했습니다.';
-      throw new Error(errorMessage);
-    }
-    throw new Error('네트워크 오류가 발생했습니다.');
+const login = async (authCode: string): Promise<LoginResponse> => {
+  const { data } = await fetchInstance.get<LoginResponse>(`/login?code=${authCode}`);
+  
+  if (data.token) {
+    fetchInstance.defaults.headers.common.Authorization = `Bearer ${data.token}`;
   }
+  
+  return data;
 };
 
-export const useLoginMutation = (
-  options?: UseMutationOptions<LoginResponse, Error, LoginRequest>,
+export const useLoginQuery = (
+  authCode: string,
+  options?: Omit<UseQueryOptions<LoginResponse, Error, LoginResponse>, 'queryKey' | 'queryFn'>
 ) => {
-  return useMutation<LoginResponse, Error, LoginRequest>({
-    mutationFn: login,
+  return useQuery<LoginResponse, Error>({
+    queryKey: ['login', authCode],
+    queryFn: () => login(authCode),
+    enabled: !!authCode,
     ...options,
   });
 };
