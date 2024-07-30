@@ -1,7 +1,8 @@
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
+import { fetchInstance } from '../instance';  
 
 interface RegisterRequestBody {
   email: string;
@@ -13,21 +14,21 @@ interface RegisterSuccessResponse {
   token: string;
 }
 
+interface ErrorResponse {
+  message: string;
+}
+
 const register = async (registerData: RegisterRequestBody): Promise<RegisterSuccessResponse> => {
-  const response = await fetch(`${BASE_URL}/api/members/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(registerData),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json(); // Get error details from the response
-    throw new Error(errorData.message || 'Registration failed'); // Throw a specific error
+  try {
+    const { data } = await fetchInstance.post<RegisterSuccessResponse>('/api/members/register', registerData);
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const errorData = error.response.data as ErrorResponse;
+      throw new Error(errorData.message || 'Registration failed');
+    }
+    throw new Error('An unexpected error occurred');
   }
-
-  return response.json();
 };
 
 export const useGetRegister = (
