@@ -2,22 +2,22 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { CategoryData } from '@/types';
 
-import { CATEGORIES_RESPONSE_DATA, getCategoriesPath } from '../mocks/categories.mock';
+import { fetchInstance } from '../instance';
 
-// 모킹 데이터 타입 정의
+// API 응답 데이터 타입 정의
 export type CategoryResponseData = CategoryData[];
 
 // React Query에서 사용할 쿼리 키
-const categoriesQueryKey = [getCategoriesPath()];
+const categoriesQueryKey = ['categories'];
 
-// 모킹 데이터를 반환하는 함수
-export const getCategories = async () => {
-  // 실제 API 호출 대신 모킹 데이터를 반환합니다.
-  return CATEGORIES_RESPONSE_DATA;
+// 실제 API를 호출하는 함수
+export const getCategories = async (): Promise<CategoryResponseData> => {
+  const { data } = await fetchInstance.get<CategoryResponseData>('/api/categories');
+  return data;
 };
 
-// useGetCategories 훅
-export const useGetCategories = () =>
+// useCategoriesQuery 훅
+export const useCategoriesQuery = () =>
   useQuery({
     queryKey: categoriesQueryKey,
     queryFn: getCategories,
