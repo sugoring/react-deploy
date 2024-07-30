@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api';
+import { fetchInstance } from '../instance';  
 
 export interface WishItem {
   id: number;
@@ -21,15 +20,15 @@ interface WishListResponse {
 
 export const useWishList = (page: number = 0, size: number = 10) => {
   const fetchWishList = async (): Promise<WishListResponse> => {
-    const response = await axios.get(
-      `${API_URL}/wishes?page=${page}&size=${size}&sort=createdDate,desc`,
+    const { data } = await fetchInstance.get<WishListResponse>(
+      `/api/wishes?page=${page}&size=${size}&sort=createdDate,desc`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       },
     );
-    return response.data;
+    return data;
   };
 
   return useQuery<WishListResponse, Error>({
@@ -43,7 +42,7 @@ export const useRemoveWish = () => {
 
   return useMutation({
     mutationFn: (wishId: number) =>
-      axios.delete(`${API_URL}/wishes/${wishId}`, {
+      fetchInstance.delete(`/api/wishes/${wishId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
