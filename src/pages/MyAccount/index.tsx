@@ -1,7 +1,7 @@
 import { Box, Heading, Spinner, Text, VStack } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
-import { useRemoveWish, useWishList } from '@/api/hooks/useGetWishList';
+import { useRemoveWishMutation, useWishListQuery } from '@/api/hooks/useWishList';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { WishList } from '@/components/features/WishList';
@@ -11,8 +11,8 @@ import { authSessionStorage } from '@/utils/storage';
 
 export const MyAccountPage = () => {
   const authInfo = useAuth();
-  const { data, isLoading, error } = useWishList();
-  const removeWishMutation = useRemoveWish();
+  const { data, isLoading, error } = useWishListQuery();
+  const removeWishMutation = useRemoveWishMutation();
 
   const handleLogout = () => {
     authSessionStorage.set(undefined);

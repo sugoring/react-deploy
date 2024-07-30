@@ -18,7 +18,7 @@ interface WishListResponse {
   totalElements: number;
 }
 
-export const useWishList = (page: number = 0, size: number = 10) => {
+export const useWishListQuery = (page: number = 0, size: number = 10) => {
   const fetchWishList = async (): Promise<WishListResponse> => {
     const { data } = await fetchInstance.get<WishListResponse>(
       `/api/wishes?page=${page}&size=${size}&sort=createdDate,desc`,
@@ -37,7 +37,7 @@ export const useWishList = (page: number = 0, size: number = 10) => {
   });
 };
 
-export const useRemoveWish = () => {
+export const useRemoveWishMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
