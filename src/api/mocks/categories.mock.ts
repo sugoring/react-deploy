@@ -1,7 +1,9 @@
-import { rest } from 'msw';
 
-// 기존에 정의된 카테고리 데이터
-export const CATEGORIES_RESPONSE_DATA = [
+import { rest } from 'msw'
+
+import type { CategoryData } from '@/types'
+
+export const CATEGORIES_MOCK_DATA: CategoryData[] = [
   {
     id: 2920,
     name: '생일',
@@ -18,14 +20,33 @@ export const CATEGORIES_RESPONSE_DATA = [
     imageUrl:
       'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Fst.kakaocdn.net%2Fproduct%2Fgift%2Fproduct%2F20240131153049_5a22b137a8d346e9beb020a7a7f4254a.jpg',
   },
-];
+  // 추가 카테고리 데이터...
+]
 
-// 카테고리 API 경로
-export const getCategoriesPath = () => '/api/categories';
+export const getCategoriesPath = () => '/api/categories'
 
-// MSW 핸들러 정의
 export const categoriesMockHandler = [
   rest.get(getCategoriesPath(), (_, res, ctx) => {
-    return res(ctx.json(CATEGORIES_RESPONSE_DATA));
+    return res(
+      ctx.status(200),
+      ctx.json(CATEGORIES_MOCK_DATA)
+    )
   }),
-];
+
+  rest.get('/api/categories/:categoryId', (req, res, ctx) => {
+    const { categoryId } = req.params
+    const category = CATEGORIES_MOCK_DATA.find(c => c.id.toString() === categoryId)
+    
+    if (category) {
+      return res(
+        ctx.status(200),
+        ctx.json(category)
+      )
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.json({ message: 'Category not found' })
+      )
+    }
+  })
+]
