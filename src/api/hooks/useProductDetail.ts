@@ -25,7 +25,10 @@ const fetchProductDetail = async ({
 
 export const useProductDetailQuery = (
   { productId }: ProductDetailRequestParams,
-  options?: Omit<UseQueryOptions<ProductDetail, AxiosError, ProductDetail, [string, number]>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ProductDetail, AxiosError, ProductDetail, [string, number]>,
+    'queryKey' | 'queryFn'
+  >,
 ): UseQueryResult<ProductDetail, AxiosError> => {
   return useQuery({
     queryKey: ['productDetail', productId],

@@ -6,7 +6,6 @@ import type { LoginRequest, LoginResponse } from '@/types';
 
 import { fetchInstance } from '../instance';
 
-
 const login = async (loginData: LoginRequest): Promise<LoginResponse> => {
   try {
     const { data } = await fetchInstance.post<LoginResponse>('/api/members/login', loginData);

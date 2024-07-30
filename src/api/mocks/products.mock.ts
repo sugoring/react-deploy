@@ -1,8 +1,8 @@
 // products.mock.ts
 
-import { rest } from 'msw'
+import { rest } from 'msw';
 
-import type { ProductData } from '@/types'
+import type { ProductData } from '@/types';
 
 export const PRODUCTS_MOCK_DATA: ProductData[] = [
   {
@@ -45,25 +45,27 @@ export const PRODUCTS_MOCK_DATA: ProductData[] = [
     price: 133000,
     categoryId: 2920,
   },
-]
+];
 
-export const getProductsPath = () => '/api/products'
+export const getProductsPath = () => '/api/products';
 
 export const productsMockHandler = [
   rest.get(getProductsPath(), (req, res, ctx) => {
-    const categoryId = req.url.searchParams.get('categoryId')
-    const pageToken = req.url.searchParams.get('pageToken')
-    const maxResults = req.url.searchParams.get('maxResults') || '20'
+    const categoryId = req.url.searchParams.get('categoryId');
+    const pageToken = req.url.searchParams.get('pageToken');
+    const maxResults = req.url.searchParams.get('maxResults') || '20';
 
-    let filteredProducts = PRODUCTS_MOCK_DATA
+    let filteredProducts = PRODUCTS_MOCK_DATA;
 
     if (categoryId) {
-      filteredProducts = filteredProducts.filter(product => product.categoryId.toString() === categoryId)
+      filteredProducts = filteredProducts.filter(
+        (product) => product.categoryId.toString() === categoryId,
+      );
     }
 
-    const startIndex = pageToken ? parseInt(pageToken) * parseInt(maxResults) : 0
-    const endIndex = startIndex + parseInt(maxResults)
-    const paginatedProducts = filteredProducts.slice(startIndex, endIndex)
+    const startIndex = pageToken ? parseInt(pageToken) * parseInt(maxResults) : 0;
+    const endIndex = startIndex + parseInt(maxResults);
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
     return res(
       ctx.status(200),
@@ -74,24 +76,18 @@ export const productsMockHandler = [
           totalResults: filteredProducts.length,
           resultsPerPage: paginatedProducts.length,
         },
-      })
-    )
+      }),
+    );
   }),
 
   rest.get(`${getProductsPath()}/:productId`, (req, res, ctx) => {
-    const { productId } = req.params
-    const product = PRODUCTS_MOCK_DATA.find(p => p.id.toString() === productId)
-    
+    const { productId } = req.params;
+    const product = PRODUCTS_MOCK_DATA.find((p) => p.id.toString() === productId);
+
     if (product) {
-      return res(
-        ctx.status(200),
-        ctx.json(product)
-      )
+      return res(ctx.status(200), ctx.json(product));
     } else {
-      return res(
-        ctx.status(404),
-        ctx.json({ message: 'Product not found' })
-      )
+      return res(ctx.status(404), ctx.json({ message: 'Product not found' }));
     }
-  })
-]
+  }),
+];

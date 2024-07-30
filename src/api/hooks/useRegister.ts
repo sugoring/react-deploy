@@ -2,7 +2,7 @@ import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { fetchInstance } from '../instance';  
+import { fetchInstance } from '../instance';
 
 interface RegisterRequestBody {
   email: string;
@@ -20,7 +20,10 @@ interface ErrorResponse {
 
 const register = async (registerData: RegisterRequestBody): Promise<RegisterSuccessResponse> => {
   try {
-    const { data } = await fetchInstance.post<RegisterSuccessResponse>('/api/members/register', registerData);
+    const { data } = await fetchInstance.post<RegisterSuccessResponse>(
+      '/api/members/register',
+      registerData,
+    );
     return data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { fetchInstance } from '../instance';  
+import { fetchInstance } from '../instance';
 
 export interface WishItem {
   id: number;

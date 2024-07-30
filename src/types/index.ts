@@ -25,7 +25,7 @@ export type GoodsDetailOptionItemData = {
   key: string;
   value: string;
   level: number;
-  options: GoodsDetailOptionItemData[]; 
+  options: GoodsDetailOptionItemData[];
   id?: number;
   price?: number;
   stockQuantity: number;

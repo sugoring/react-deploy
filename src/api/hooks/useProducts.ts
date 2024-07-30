@@ -6,7 +6,7 @@ import {
 
 import type { ProductData } from '@/types';
 
-import { fetchInstance } from '../instance';  
+import { fetchInstance } from '../instance';
 
 type RequestParams = {
   categoryId: string;

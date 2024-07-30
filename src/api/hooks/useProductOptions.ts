@@ -2,7 +2,7 @@ import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { fetchInstance } from '../instance';  
+import { fetchInstance } from '../instance';
 
 export interface ProductOption {
   id: number;
@@ -24,7 +24,10 @@ const fetchProductOptions = async ({
 
 export const useProductOptionsQuery = (
   { productId }: ProductOptionsRequestParams,
-  options?: Omit<UseQueryOptions<ProductOption[], AxiosError, ProductOption[], [string, number]>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ProductOption[], AxiosError, ProductOption[], [string, number]>,
+    'queryKey' | 'queryFn'
+  >,
 ): UseQueryResult<ProductOption[], AxiosError> => {
   return useQuery({
     queryKey: ['productOptions', productId],
