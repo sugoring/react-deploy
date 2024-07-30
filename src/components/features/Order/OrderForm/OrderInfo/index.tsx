@@ -1,7 +1,7 @@
 import { Divider } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
-import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
+import { useProductDetailQuery } from '@/api/hooks/useProductDetail';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import type { OrderHistory } from '@/types';
@@ -17,7 +17,7 @@ type Props = {
 export const OrderFormOrderInfo = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
 
-  const { data: detail, isLoading, error } = useGetProductDetail({ productId: id });
+  const { data: detail, isLoading, error } = useProductDetailQuery({ productId: id });
 
   if (isLoading) {
     return <div>Loading...</div>;

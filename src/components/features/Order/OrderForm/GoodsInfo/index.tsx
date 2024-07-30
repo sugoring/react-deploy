@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
+import { useProductDetailQuery } from '@/api/hooks/useProductDetail';
 import { Image } from '@/components/common/Image';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import type { OrderHistory } from '@/types';
@@ -13,7 +13,7 @@ type Props = {
 
 export const GoodsInfo = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
-  const { data: detail, isLoading, error } = useGetProductDetail({ productId: id });
+  const { data: detail, isLoading, error } = useProductDetailQuery({ productId: id });
 
   if (isLoading) {
     return (

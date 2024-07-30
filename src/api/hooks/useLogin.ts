@@ -28,7 +28,7 @@ const login = async (loginData: LoginRequestBody): Promise<LoginSuccessResponse>
   }
 };
 
-export const useLogin = (
+export const useLoginMutation = (
   options?: UseMutationOptions<LoginSuccessResponse, Error, LoginRequestBody>,
 ) => {
   return useMutation<LoginSuccessResponse, Error, LoginRequestBody>({

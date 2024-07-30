@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   type ProductDetailRequestParams,
-  useGetProductDetail,
-} from '@/api/hooks/useGetProductDetail';
-import { useGetProductOptions } from '@/api/hooks/useGetProductOptions';
+  useProductDetailQuery,
+} from '@/api/hooks/useProductDetail';
+import { useProductOptionsQuery } from '@/api/hooks/useProductOptions';
 import { Button } from '@/components/common/Button';
 import { HeartIcon } from '@/components/common/Icons/HeartIcon';
 import { useAuth } from '@/provider/Auth';
@@ -18,8 +18,8 @@ import { CountOptionItem } from './OptionItem/CountOptionItem';
 type Props = ProductDetailRequestParams;
 
 export const OptionSection = ({ productId }: Props) => {
-  const { data: detail, error: detailError } = useGetProductDetail({ productId });
-  const { data: options, error: optionsError } = useGetProductOptions({ productId });
+  const { data: detail, error: detailError } = useProductDetailQuery({ productId });
+  const { data: options, error: optionsError } = useProductOptionsQuery({ productId });
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [countAsString, setCountAsString] = useState('1');

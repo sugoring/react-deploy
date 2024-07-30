@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useLogin } from '@/api/hooks/useGetLogin';
+import { useLoginMutation } from '@/api/hooks/useLogin';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
@@ -26,7 +26,7 @@ export const LoginPage = () => {
     }
   }, [location.state?.successMessage, navigate]);
 
-  const { mutate: login, isPending } = useLogin({
+  const { mutate: login, isPending } = useLoginMutation({
     onSuccess: (data) => {
       authSessionStorage.set(data.token);
       navigate(RouterPath.home);

@@ -1,14 +1,14 @@
 import { Divider } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
-import type { ProductDetailRequestParams } from '@/api/hooks/useGetProductDetail';
-import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
+import type { ProductDetailRequestParams } from '@/api/hooks/useProductDetail';
+import { useProductDetailQuery } from '@/api/hooks/useProductDetail';
 import { breakpoints } from '@/styles/variants';
 
 type Props = ProductDetailRequestParams;
 
 export const GoodsDetailHeader = ({ productId }: Props) => {
-  const { data: detail, isLoading, error } = useGetProductDetail({ productId });
+  const { data: detail, isLoading, error } = useProductDetailQuery({ productId });
 
   if (isLoading) {
     return <div>Loading...</div>;
