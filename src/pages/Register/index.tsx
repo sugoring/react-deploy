@@ -15,27 +15,28 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const { mutate: register, isPending } = useGetRegister({
-    onSuccess: () => {
-      // 회원가입 성공 시 로그인 페이지로 이동
-      navigate(RouterPath.login, {
-        state: {
-          successMessage: '회원가입이 완료되었습니다. 로그인해 주세요.',
-        },
-      });
-    },
-    onError: (error) => {
-      alert(error.message);
-    },
-  });
+  const { mutateAsync: register, isPending } = useGetRegister();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!email || !password) {
       alert('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
-    register({ email, password });
+    try {
+      await register({ email, password });
+      navigate(RouterPath.login, {
+        state: {
+          successMessage: '회원가입이 완료되었습니다. 로그인해 주세요.',
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('회원가입 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   return (
