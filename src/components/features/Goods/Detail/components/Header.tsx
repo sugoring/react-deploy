@@ -8,15 +8,7 @@ import { breakpoints } from '@/styles/variants';
 type Props = ProductDetailRequestParams;
 
 export const GoodsDetailHeader = ({ productId }: Props) => {
-  const { data: detail, isLoading, error } = useProductDetailQuery({ productId });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  const { data: detail } = useProductDetailQuery({ productId });
 
   if (!detail) {
     return <div>No data available</div>;
