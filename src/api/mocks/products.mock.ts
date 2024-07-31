@@ -1,5 +1,3 @@
-// src/api/mocks/products.mock.ts
-
 import { rest } from 'msw';
 
 import type { ProductData } from '@/types';
@@ -43,62 +41,44 @@ export const mockProducts: ProductData[] = [
   { id: 25, name: "민트 초코칩 아이스크림", price: 4000, imageUrl: "https://example.com/mint-choco-ice-cream.jpg", categoryId: 7 },
 ];
 
-type SortableFields = keyof Pick<ProductData, 'name' | 'price'>;
-
 export const productsMockHandler = [
   rest.get('/api/products', (req, res, ctx) => {
-    const categoryId = req.url.searchParams.get('categoryId');
-    const page = parseInt(req.url.searchParams.get('page') || '0', 10);
-    const size = parseInt(req.url.searchParams.get('size') || '10', 10);
+    const page = Number(req.url.searchParams.get('page')) || 0;
+    const size = Number(req.url.searchParams.get('size')) || 10;
     const sort = req.url.searchParams.get('sort') || 'name,asc';
+    const categoryId = Number(req.url.searchParams.get('categoryId'));
 
-    let filteredProducts = mockProducts;
+    let filteredProducts = [...mockProducts];
+
+    // 카테고리 필터링
     if (categoryId) {
-      filteredProducts = mockProducts.filter(product => product.categoryId === parseInt(categoryId, 10));
+      filteredProducts = filteredProducts.filter(product => product.categoryId === categoryId);
     }
 
-    // 정렬 로직
-    const [sortField, sortOrder] = sort.split(',');
-    if (isSortableField(sortField)) {
-      filteredProducts.sort((a, b) => {
-        if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
-        if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
+    // 정렬
+    const [sortField, sortOrder] = sort.split(',') as [keyof ProductData, 'asc' | 'desc'];
+    filteredProducts.sort((a, b) => {
+      if (sortField in a && sortField in b) {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        }
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+      }
+      return 0;
+    });
 
     // 페이지네이션
     const startIndex = page * size;
     const endIndex = startIndex + size;
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
-    const totalPages = Math.ceil(filteredProducts.length / size);
-
     return res(
       ctx.status(200),
-      ctx.json({
-        content: paginatedProducts,
-        totalElements: filteredProducts.length,
-        totalPages: totalPages,
-        size: size,
-        number: page,
-      })
+      ctx.json(paginatedProducts)
     );
   }),
 ];
-
-function isSortableField(field: string): field is SortableFields {
-  return ['name', 'price'].includes(field);
-}
-
-// 테스트용 헬퍼 함수들
-export const getMockProducts = () => mockProducts;
-
-export const getMockProductsByCategory = (categoryId: number) => 
-  mockProducts.filter(p => p.categoryId === categoryId);
-
-export const getMockProduct = (productId: number) => 
-  mockProducts.find(p => p.id === productId);
-
-export const getRandomMockProduct = () => 
-  mockProducts[Math.floor(Math.random() * mockProducts.length)];

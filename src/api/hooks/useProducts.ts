@@ -17,10 +17,10 @@ export const getProducts = async ({
 }: ProductsRequest): Promise<ProductData[]> => {
   const { data } = await fetchInstance.get<ProductData[]>('/api/products', {
     params: {
-      categoryId: categoryId.toString(),
       page,
       size,
       sort,
+      categoryId,
     },
   });
 
