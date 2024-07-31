@@ -10,46 +10,42 @@ import { fetchInstance } from '../instance';
 
 type RequestParams = {
   categoryId: string;
-  pageToken?: string;
-  maxResults?: number;
+  page?: number;
+  size?: number;
+  sort?: string;
 };
 
-type ProductsResponseData = {
-  products: ProductData[];
-  nextPageToken?: string;
-  pageInfo: {
-    totalResults: number;
-    resultsPerPage: number;
-  };
-};
+type ProductsResponseData = ProductData[];
 
 // 실제 API 호출을 수행하는 함수
 export const getProducts = async ({
   categoryId,
-  pageToken,
-  maxResults,
+  page = 0,
+  size = 10,
+  sort = 'name,asc',
 }: RequestParams): Promise<ProductsResponseData> => {
   const { data } = await fetchInstance.get<ProductsResponseData>('/api/products', {
     params: {
       categoryId,
-      pageToken,
-      maxResults,
+      page,
+      size,
+      sort,
     },
   });
 
   return data;
 };
 
-type Params = Pick<RequestParams, 'maxResults' | 'categoryId'> & { initPageToken?: string };
+type Params = Pick<RequestParams, 'size' | 'categoryId' | 'sort'>;
 export const useGetProducts = ({
   categoryId,
-  maxResults = 20,
-  initPageToken,
+  size = 10,
+  sort = 'name,asc',
 }: Params): UseInfiniteQueryResult<InfiniteData<ProductsResponseData>> => {
   return useInfiniteQuery({
-    queryKey: ['products', categoryId, maxResults, initPageToken],
-    queryFn: ({ pageParam }) => getProducts({ categoryId, pageToken: pageParam, maxResults }),
-    initialPageParam: initPageToken,
-    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    queryKey: ['products', categoryId, size, sort],
+    queryFn: ({ pageParam = 0 }) => getProducts({ categoryId, page: pageParam, size, sort }),
+    initialPageParam: 0,
+    getNextPageParam: (_, allPages) => allPages.length,
   });
 };

@@ -23,9 +23,9 @@ export const CategoryProductsSection = ({ categoryId }: Props) => {
   if (isLoading) return <LoadingView />;
   if (isError) return <TextView>에러가 발생했습니다.</TextView>;
   if (!data) return <></>;
-  if (data.pages[0].products.length <= 0) return <TextView>상품이 없어요.</TextView>;
+  if (data.pages[0].length <= 0) return <TextView>상품이 없어요.</TextView>;
 
-  const flattenGoodsList = data.pages.map((page) => page?.products ?? []).flat();
+  const flattenGoodsList = data.pages.flat();
 
   return (
     <Wrapper>
