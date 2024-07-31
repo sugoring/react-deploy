@@ -6,13 +6,14 @@ import { useProductDataQuery } from '@/api/hooks/useProductDetail';
 import { useProductOptionsQuery } from '@/api/hooks/useProductOptions';
 import { useAddWishMutation } from '@/api/hooks/useWishlist';
 import { Button } from '@/components/common/Button';
-import { HeartIcon } from '@/components/common/Icons/HeartIcon';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
 import type { ProductId } from '@/types';
 import { orderHistorySessionStorage } from '@/utils/storage';
 
-import { CountOptionItem } from './OptionItem/CountOptionItem';
+import { PriceDisplay } from './PriceDisplay';
+import { ProductOptionSelector } from './ProductOptionSelector';
+import { WishButton } from './WishButton';
 
 export const OptionSection = ({ productId }: { productId: ProductId }) => {
   const { data: detail, error: detailError } = useProductDataQuery({ productId });
@@ -20,10 +21,6 @@ export const OptionSection = ({ productId }: { productId: ProductId }) => {
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [countAsString, setCountAsString] = useState('1');
-
-  const selectedOption = useMemo(() => {
-    return options?.find((option) => option.id === selectedOptionId);
-  }, [options, selectedOptionId]);
 
   const totalPrice = useMemo(() => {
     const price = detail?.price ?? 0;
@@ -44,14 +41,14 @@ export const OptionSection = ({ productId }: { productId: ProductId }) => {
       return navigate(getDynamicPath.login());
     }
 
-    if (!selectedOption) {
+    if (!selectedOptionId) {
       alert('옵션을 선택해주세요.');
       return;
     }
 
     orderHistorySessionStorage.set({
       id: productId,
-      optionId: selectedOption.id,
+      optionId: selectedOptionId,
       count: parseInt(countAsString),
     });
 
@@ -88,32 +85,17 @@ export const OptionSection = ({ productId }: { productId: ProductId }) => {
 
   return (
     <Wrapper>
-      <select onChange={(e) => setSelectedOptionId(Number(e.target.value))}>
-        <option value="">옵션을 선택하세요</option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name} (재고: {option.quantity})
-          </option>
-        ))}
-      </select>
-      {selectedOption && (
-        <CountOptionItem
-          name={selectedOption.name}
-          value={countAsString}
-          onChange={setCountAsString}
-          minValues={1}
-          maxValues={selectedOption.quantity}
-        />
-      )}
+      <ProductOptionSelector
+        options={options}
+        selectedOptionId={selectedOptionId}
+        setSelectedOptionId={setSelectedOptionId}
+        countAsString={countAsString}
+        setCountAsString={setCountAsString}
+      />
       <BottomWrapper>
-        <PricingWrapper>
-          총 결제 금액 <span>{totalPrice}원</span>
-        </PricingWrapper>
-        <WishButton onClick={handleWishClick}>
-          <HeartIcon width={160} height={20} />
-          위시리스트에 추가
-        </WishButton>
-        <Button theme="black" size="large" onClick={handleClick} disabled={!selectedOption}>
+        <PriceDisplay totalPrice={totalPrice} />
+        <WishButton onClick={handleWishClick} />
+        <Button theme="black" size="large" onClick={handleClick} disabled={!selectedOptionId}>
           나에게 선물하기
         </Button>
       </BottomWrapper>
@@ -132,40 +114,4 @@ const Wrapper = styled.div`
 
 const BottomWrapper = styled.div`
   padding: 12px 0 0;
-`;
-
-const PricingWrapper = styled.div`
-  margin-bottom: 20px;
-  padding: 18px 20px;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  display: flex;
-  justify-content: space-between;
-
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 14px;
-  color: #111;
-
-  & span {
-    font-size: 20px;
-    letter-spacing: -0.02em;
-  }
-`;
-
-const WishButton = styled.button`
-  margin-bottom: 30px;
-  padding: 18px 20px;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  display: flex;
-
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 14px;
-  color: #111;
-
-  &:hover {
-    background-color: #e0e0e0;
-  }
 `;
