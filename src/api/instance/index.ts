@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import type { AxiosError,AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 
 const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
@@ -28,7 +28,7 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
         // 요청 설정 중에 에러가 발생했을 때
         return Promise.reject(new Error('요청 설정 중 에러가 발생했습니다.'));
       }
-    }
+    },
   );
 
   return instance;

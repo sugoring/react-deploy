@@ -15,10 +15,14 @@ export const CategoryPage = () => {
     return <Navigate to={RouterPath.notFound} />;
   }
 
+  if (!categoryId) return null;
+
+  const numericCategoryId = parseInt(categoryId, 10);
+
   return (
     <>
       <CategoryHeroSection categoryId={categoryId} />
-      <CategoryProductsSection categoryId={categoryId} />
+      <CategoryProductsSection categoryId={numericCategoryId} />
     </>
   );
 };

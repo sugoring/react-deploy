@@ -29,7 +29,7 @@ const loginHandler = rest.get('/login', (req, res, ctx) => {
 const getAuthCodeHandler = rest.post('/auth/code', (req, res, ctx) => {
   const { email, password } = req.body as { email: string; password: string };
 
-  const user = fakeUsers.find(u => u.email === email && u.password === password);
+  const user = fakeUsers.find((u) => u.email === email && u.password === password);
 
   if (user) {
     return res(ctx.status(200), ctx.json({ authCode: 'fake-auth-code' }));
