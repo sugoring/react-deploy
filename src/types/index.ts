@@ -74,3 +74,21 @@ export type MessageCardTemplateData = {
   imageUrl: string;
 };
 
+// 위시 리스트
+export type Product = {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+};
+
+export type WishlistProduct = {
+  id: number;
+  product: Product;
+};
+
+export type WishlistRequest = {
+  page?: number;
+  size?: number;
+  sort?: string;
+};

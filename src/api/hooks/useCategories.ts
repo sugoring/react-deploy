@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchInstance } from '@/api/instance';
 import type { CategoryData } from '@/types';
+
+import { fetchInstance } from '../instance';
 
 // React Query에서 사용할 쿼리 키
 const CATEGORIES_QUERY_KEY = ['categories'];
