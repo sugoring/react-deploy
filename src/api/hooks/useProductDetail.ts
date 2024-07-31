@@ -1,38 +1,25 @@
-import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
+import { useQuery, type UseQueryOptions, type UseQueryResult } from '@tanstack/react-query';
+
+import type { ProductData } from '@/types';
 
 import { fetchInstance } from '../instance';
 
-export interface ProductDetail {
-  id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
-  categoryId: number;
-}
-
-export interface ProductDetailRequestParams {
+export interface ProductDataRequestParams {
   productId: number;
 }
 
-const fetchProductDetail = async ({
-  productId,
-}: ProductDetailRequestParams): Promise<ProductDetail> => {
-  const { data } = await fetchInstance.get<ProductDetail>(`/api/products/${productId}`);
+const fetchProductData = async ({ productId }: ProductDataRequestParams): Promise<ProductData> => {
+  const { data } = await fetchInstance.get<ProductData>(`/api/products/${productId}`);
   return data;
 };
 
-export const useProductDetailQuery = (
-  { productId }: ProductDetailRequestParams,
-  options?: Omit<
-    UseQueryOptions<ProductDetail, AxiosError, ProductDetail, [string, number]>,
-    'queryKey' | 'queryFn'
-  >,
-): UseQueryResult<ProductDetail, AxiosError> => {
+export const useProductDataQuery = (
+  { productId }: ProductDataRequestParams,
+  options?: Omit<UseQueryOptions<ProductData, Error, ProductData, [string, number]>, 'queryKey' | 'queryFn'>
+): UseQueryResult<ProductData, Error> => {
   return useQuery({
-    queryKey: ['productDetail', productId],
-    queryFn: () => fetchProductDetail({ productId }),
+    queryKey: ['ProductData', productId],
+    queryFn: () => fetchProductData({ productId }),
     staleTime: 5 * 60 * 1000, // 5 minutes
     ...options,
   });

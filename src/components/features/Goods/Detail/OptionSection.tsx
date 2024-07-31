@@ -2,10 +2,7 @@ import styled from '@emotion/styled';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  type ProductDetailRequestParams,
-  useProductDetailQuery,
-} from '@/api/hooks/useProductDetail';
+import { type ProductDataRequestParams, useProductDataQuery } from '@/api/hooks/useProductDetail';
 import { useProductOptionsQuery } from '@/api/hooks/useProductOptions';
 import { Button } from '@/components/common/Button';
 import { HeartIcon } from '@/components/common/Icons/HeartIcon';
@@ -15,10 +12,10 @@ import { orderHistorySessionStorage } from '@/utils/storage';
 
 import { CountOptionItem } from './OptionItem/CountOptionItem';
 
-type Props = ProductDetailRequestParams;
+type Props = ProductDataRequestParams;
 
 export const OptionSection = ({ productId }: Props) => {
-  const { data: detail, error: detailError } = useProductDetailQuery({ productId });
+  const { data: detail, error: detailError } = useProductDataQuery({ productId });
   const { data: options, error: optionsError } = useProductOptionsQuery({ productId });
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);

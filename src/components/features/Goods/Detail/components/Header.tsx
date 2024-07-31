@@ -1,14 +1,14 @@
 import { Divider } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
-import type { ProductDetailRequestParams } from '@/api/hooks/useProductDetail';
-import { useProductDetailQuery } from '@/api/hooks/useProductDetail';
+import type { ProductDataRequestParams } from '@/api/hooks/useProductDetail';
+import { useProductDataQuery } from '@/api/hooks/useProductDetail';
 import { breakpoints } from '@/styles/variants';
 
-type Props = ProductDetailRequestParams;
+type Props = ProductDataRequestParams;
 
 export const GoodsDetailHeader = ({ productId }: Props) => {
-  const { data: detail } = useProductDetailQuery({ productId });
+  const { data: detail } = useProductDataQuery({ productId });
 
   if (!detail) {
     return <div>No data available</div>;
