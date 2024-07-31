@@ -87,6 +87,11 @@ export type WishlistProduct = {
   product: Product;
 };
 
+export type WishListProps = {
+  wishes: WishlistProduct[];
+  onRemove: (wishId: number) => void;
+};
+
 export type WishlistRequest = {
   page?: number;
   size?: number;

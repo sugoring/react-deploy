@@ -17,20 +17,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-interface WishItem {
-  id: number;
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    imageUrl: string;
-  };
-}
-
-interface WishListProps {
-  wishes: WishItem[];
-  onRemove: (wishId: number) => void;
-}
+import type { WishListProps } from '@/types';
 
 export const WishList: React.FC<WishListProps> = ({ wishes, onRemove }) => {
   const toast = useToast();
