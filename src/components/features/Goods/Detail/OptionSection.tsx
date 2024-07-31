@@ -2,19 +2,18 @@ import styled from '@emotion/styled';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { type ProductDataRequestParams, useProductDataQuery } from '@/api/hooks/useProductDetail';
+import { useProductDataQuery } from '@/api/hooks/useProductDetail';
 import { useProductOptionsQuery } from '@/api/hooks/useProductOptions';
 import { Button } from '@/components/common/Button';
 import { HeartIcon } from '@/components/common/Icons/HeartIcon';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
+import type { ProductId } from '@/types';
 import { orderHistorySessionStorage } from '@/utils/storage';
 
 import { CountOptionItem } from './OptionItem/CountOptionItem';
 
-type Props = ProductDataRequestParams;
-
-export const OptionSection = ({ productId }: Props) => {
+export const OptionSection = ({ productId }: { productId: ProductId }) => {
   const { data: detail, error: detailError } = useProductDataQuery({ productId });
   const { data: options, error: optionsError } = useProductOptionsQuery({ productId });
 

@@ -14,6 +14,8 @@ export type CategoryData = {
 };
 
 // 제품
+export type ProductId = number;
+
 export type ProductData = {
   id: number;
   name: string;

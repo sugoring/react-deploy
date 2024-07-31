@@ -3,18 +3,16 @@ import { Suspense } from 'react';
 import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import type { ProductDataRequestParams } from '@/api/hooks/useProductDetail';
 import { breakpoints } from '@/styles/variants';
+import type { ProductId } from '@/types';
 
 import { GoodsDetailHeader } from './components/Header';
-
-type Props = ProductDataRequestParams;
 
 const ErrorFallback = ({ error }: FallbackProps) => <div>에러가 발생했습니다: {error.message}</div>;
 
 const LoadingFallback = () => <div>로딩 중...</div>;
 
-export const GoodsDetail = ({ productId }: Props) => {
+export const GoodsDetail = ({ productId }: { productId: ProductId }) => {
   return (
     <Wrapper>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
