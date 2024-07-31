@@ -1,37 +1,21 @@
-import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
+import { useQuery, type UseQueryOptions, type UseQueryResult } from '@tanstack/react-query';
+
+import type { ProductId, ProductOptionsData } from '@/types';
 
 import { fetchInstance } from '../instance';
 
-export interface ProductOption {
-  id: number;
-  name: string;
-  quantity: number;
-  productId: number;
-}
-
-export interface ProductOptionsRequestParams {
-  productId: number;
-}
-
-const fetchProductOptions = async ({
-  productId,
-}: ProductOptionsRequestParams): Promise<ProductOption[]> => {
-  const { data } = await fetchInstance.get<ProductOption[]>(`/api/products/${productId}/options`);
+const fetchProductOptions = async (productId: ProductId): Promise<ProductOptionsData[]> => {
+  const { data } = await fetchInstance.get<ProductOptionsData[]>(`/api/products/${productId}/options`);
   return data;
 };
 
 export const useProductOptionsQuery = (
-  { productId }: ProductOptionsRequestParams,
-  options?: Omit<
-    UseQueryOptions<ProductOption[], AxiosError, ProductOption[], [string, number]>,
-    'queryKey' | 'queryFn'
-  >,
-): UseQueryResult<ProductOption[], AxiosError> => {
+  { productId }: { productId: ProductId },
+  options?: Omit<UseQueryOptions<ProductOptionsData[], Error, ProductOptionsData[], ['ProductOptions', ProductId]>, 'queryKey' | 'queryFn'>
+): UseQueryResult<ProductOptionsData[], Error> => {
   return useQuery({
-    queryKey: ['productOptions', productId],
-    queryFn: () => fetchProductOptions({ productId }),
+    queryKey: ['ProductOptions', productId],
+    queryFn: () => fetchProductOptions(productId),
     ...options,
   });
 };
