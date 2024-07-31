@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useProductDataQuery } from '@/api/hooks/useProductDetail';
 import { useProductOptionsQuery } from '@/api/hooks/useProductOptions';
+import { useAddWishMutation } from '@/api/hooks/useWishlist';
 import { Button } from '@/components/common/Button';
 import { HeartIcon } from '@/components/common/Icons/HeartIcon';
 import { useAuth } from '@/provider/Auth';
@@ -31,6 +32,7 @@ export const OptionSection = ({ productId }: { productId: ProductId }) => {
 
   const navigate = useNavigate();
   const authInfo = useAuth();
+  const addWishMutation = useAddWishMutation();
 
   const handleClick = () => {
     if (!authInfo) {
@@ -57,8 +59,23 @@ export const OptionSection = ({ productId }: { productId: ProductId }) => {
   };
 
   const handleWishClick = () => {
-    // 위시리스트 추가 로직 구현 (아직 구현되지 않음)
-    alert('위시리스트에 추가되었습니다.');
+    if (!authInfo) {
+      const isConfirm = window.confirm(
+        '로그인이 필요한 메뉴입니다.\n로그인 페이지로 이동하시겠습니까?',
+      );
+
+      if (!isConfirm) return;
+      return navigate(getDynamicPath.login());
+    }
+
+    addWishMutation.mutate(productId, {
+      onSuccess: () => {
+        alert('위시리스트에 추가되었습니다.');
+      },
+      onError: () => {
+        alert('위시리스트 추가에 실패했습니다.');
+      },
+    });
   };
 
   if (!detail || !options) {
