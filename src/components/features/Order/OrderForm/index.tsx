@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
+import { useCreateOrderMutation } from '@/api/hooks/useOrder'; // API 훅 import
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { SplitLayout } from '@/components/common/layouts/SplitLayout';
 import type { OrderFormData, OrderHistory } from '@/types';
@@ -16,6 +18,8 @@ type Props = {
 
 export const OrderForm = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
+  const navigate = useNavigate();
+  const createOrderMutation = useCreateOrderMutation(); // API 훅 사용
 
   const methods = useForm<OrderFormData>({
     defaultValues: {
@@ -24,11 +28,12 @@ export const OrderForm = ({ orderHistory }: Props) => {
       senderId: 0,
       receiverId: 0,
       hasCashReceipt: false,
+      messageCardTextMessage: '',
     },
   });
   const { handleSubmit } = methods;
 
-  const handleForm = (values: OrderFormData) => {
+  const handleForm = async (values: OrderFormData) => {
     const { errorMessage, isValid } = validateOrderForm(values);
 
     if (!isValid) {
@@ -36,8 +41,14 @@ export const OrderForm = ({ orderHistory }: Props) => {
       return;
     }
 
-    console.log('values', values);
-    alert('주문이 완료되었습니다.');
+    try {
+      await createOrderMutation.mutateAsync(values); // API를 통한 주문 생성
+      alert('주문이 완료되었습니다.');
+      navigate('/order-history'); // 주문 완료 후 주문 내역 페이지로 이동
+    } catch (error) {
+      alert('주문 처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      console.error('Order creation error:', error);
+    }
   };
 
   // Submit 버튼을 누르면 form이 제출되는 것을 방지하기 위한 함수
