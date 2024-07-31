@@ -1,110 +1,74 @@
 import { rest } from 'msw';
 
-const BASE_URL = 'http://localhost:3000/api';
+import type { WishlistProduct } from '@/types';
 
-// 모의 데이터
-const generateRandomName = (): string => {
-  const products = [
-    'Product A',
-    'Product B',
-    'Product C',
-    'Product D',
-    'Product E',
-    'Product F',
-    'Product G',
-    'Product H',
-    'Product I',
-    'Product J',
-  ];
-  return products[Math.floor(Math.random() * products.length)];
-};
-
-const generateRandomPrice = (): number => {
-  return Math.floor(Math.random() * 10000) + 1;
-};
-
-const generateRandomImageUrl = (): string => {
-  return 'https://www.jungle.co.kr/image/ea06cd0346fa8777cb624e3f'; // Placeholder image URL
-};
-
-let wishlist = Array.from({ length: 30 }, (_, id) => ({
-  id: id + 1,
-  product: {
-    id: id + 1,
-    name: generateRandomName(),
-    price: generateRandomPrice(),
-    imageUrl: generateRandomImageUrl(),
+const mockWishlist: WishlistProduct[] = [
+  {
+    id: 1,
+    product: {
+      id: 1,
+      name: 'Product A',
+      price: 100,
+      imageUrl: 'http://example.com/product-a.jpg',
+    },
   },
-}));
+  {
+    id: 2,
+    product: {
+      id: 2,
+      name: 'Product B',
+      price: 150,
+      imageUrl: 'http://example.com/product-b.jpg',
+    },
+  },
+];
+
 export const wishlistMockHandlers = [
-  // 위시리스트 상품 추가
-  rest.post(`${BASE_URL}/wishes`, (req, res, ctx) => {
-    const { productId } = req.body as { productId: number };
-    const newWish = {
-      id: wishlist.length + 1,
-      product: {
-        id: productId,
-        name: `Product ${productId}`,
-        price: Math.floor(Math.random() * 1000),
-        imageUrl: `http://example.com/product-${productId}.jpg`,
-      },
-    };
-    wishlist.push(newWish);
-    return res(ctx.status(201), ctx.json({ id: newWish.id, productId }));
-  }),
-
-  // 위시리스트 상품 삭제
-  rest.delete(`${BASE_URL}/wishes/:wishId`, (req, res, ctx) => {
-    const { wishId } = req.params;
-    wishlist = wishlist.filter((wish) => wish.id !== Number(wishId));
-    return res(ctx.status(204));
-  }),
-
-  // 위시리스트 상품 조회 (페이지네이션 적용)
-  rest.get(`${BASE_URL}/wishes`, (req, res, ctx) => {
-    const page = Number(req.url.searchParams.get('page') || '0');
-    const size = Number(req.url.searchParams.get('size') || '10');
-    const sortParam = req.url.searchParams.get('sort') || 'createdDate,desc';
-
-    const startIndex = page * size;
-    const endIndex = startIndex + size;
-
-    // 정렬 로직 구현 (여기서는 간단히 id로 정렬)
-    const sortedWishlist = [...wishlist].sort((a, b) => {
-      const [field, order] = sortParam.split(',');
-      if (field === 'createdDate') {
-        return order === 'desc' ? b.id - a.id : a.id - b.id;
-      }
-      return 0;
-    });
-
-    const paginatedWishes = sortedWishlist.slice(startIndex, endIndex);
+  // 위시 리스트 조회
+  rest.get('/api/wishes', (req, res, ctx) => {
+    const page = req.url.searchParams.get('page') || '0';
+    const size = req.url.searchParams.get('size') || '10';
+    const start = parseInt(page, 10) * parseInt(size, 10);
+    const end = start + parseInt(size, 10);
 
     return res(
       ctx.status(200),
-      ctx.json({
-        content: paginatedWishes,
-        pageable: {
-          sort: {
-            sorted: true,
-            unsorted: false,
-            empty: false,
-          },
-          pageNumber: page,
-          pageSize: size,
-          offset: startIndex,
-          unpaged: false,
-          paged: true,
-        },
-        totalPages: Math.ceil(wishlist.length / size),
-        totalElements: wishlist.length,
-        last: endIndex >= wishlist.length,
-        number: page,
-        size: size,
-        numberOfElements: paginatedWishes.length,
-        first: page === 0,
-        empty: paginatedWishes.length === 0,
-      }),
+      ctx.json(mockWishlist.slice(start, end)),
+    );
+  }),
+
+  // 위시 리스트에 상품 추가
+  rest.post('/api/wishes', async (req, res, ctx) => {
+    const { productId } = await req.json();
+    const newWish: WishlistProduct = {
+      id: mockWishlist.length + 1,
+      product: {
+        id: productId,
+        name: `Product ${String.fromCharCode(64 + productId)}`, // 예: 'Product C'
+        price: 200, // 임의의 가격
+        imageUrl: `http://example.com/product-${String.fromCharCode(96 + productId)}.jpg`,
+      },
+    };
+    mockWishlist.push(newWish);
+
+    return res(
+      ctx.status(201),
+      ctx.json({ productId }),
+    );
+  }),
+
+  // 위시 리스트에서 상품 제거
+  rest.delete('/api/wishes/:id', (req, res, ctx) => {
+    const { id } = req.params;
+    const index = mockWishlist.findIndex(wish => wish.id === parseInt(id as string, 10));
+
+    if (index !== -1) {
+      mockWishlist.splice(index, 1);
+    }
+
+    return res(
+      ctx.status(200),
+      ctx.json({}),
     );
   }),
 ];

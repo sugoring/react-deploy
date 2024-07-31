@@ -1,7 +1,7 @@
 import { Box, Heading, Spinner, Text, VStack } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
-import { useRemoveWishMutation, useWishListQuery } from '@/api/hooks/useWishList';
+import { useRemoveWishMutation, useWishListQuery } from '@/api/hooks/useWishlist';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { WishList } from '@/components/features/WishList';
@@ -45,8 +45,8 @@ export const MyAccountPage = () => {
             <Spinner />
           ) : error ? (
             <Text>에러가 발생했습니다: {(error as Error).message}</Text>
-          ) : data && data.content.length > 0 ? (
-            <WishList wishes={data.content} onRemove={handleRemoveWish} />
+          ) : data && data.length > 0 ? (
+            <WishList wishes={data} onRemove={handleRemoveWish} />
           ) : (
             <Text>위시리스트가 비어있습니다.</Text>
           )}
