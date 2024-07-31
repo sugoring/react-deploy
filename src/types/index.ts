@@ -1,3 +1,10 @@
+// 로그인
+export type LoginResponse = {
+  email: string;
+  token: string;
+};
+
+// 카테고리 
 export type CategoryData = {
   id: number;
   name: string;
@@ -6,6 +13,7 @@ export type CategoryData = {
   imageUrl: string;
 };
 
+// 제품
 export type ProductData = {
   id: number;
   name: string;
@@ -13,6 +21,14 @@ export type ProductData = {
   imageUrl: string;
   categoryId: number;
 };
+ 
+  export type ProductsRequest = {
+    categoryId: string | number;
+    page?: number;
+    size?: number;
+    sort?: string;
+  };
+
 
 export type ProductOptionsData = {
   id: number;
@@ -31,6 +47,7 @@ export type GoodsDetailOptionItemData = {
   stockQuantity: number;
 };
 
+// 주문
 export type OrderHistory = {
   id: number;
   optionId: number;
@@ -55,7 +72,3 @@ export type MessageCardTemplateData = {
   imageUrl: string;
 };
 
-export type LoginResponse = {
-  email: string;
-  token: string;
-};

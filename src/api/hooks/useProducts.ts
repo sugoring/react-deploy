@@ -4,18 +4,9 @@ import {
   type UseInfiniteQueryResult,
 } from '@tanstack/react-query';
 
-import type { ProductData } from '@/types';
+import type { ProductData, ProductsRequest } from '@/types';
 
 import { fetchInstance } from '../instance';
-
-type RequestParams = {
-  categoryId: string;
-  page?: number;
-  size?: number;
-  sort?: string;
-};
-
-type ProductsResponseData = ProductData[];
 
 // 실제 API 호출을 수행하는 함수
 export const getProducts = async ({
@@ -23,10 +14,10 @@ export const getProducts = async ({
   page = 0,
   size = 10,
   sort = 'name,asc',
-}: RequestParams): Promise<ProductsResponseData> => {
-  const { data } = await fetchInstance.get<ProductsResponseData>('/api/products', {
+}: ProductsRequest): Promise<ProductData[]> => {
+  const { data } = await fetchInstance.get<ProductData[]>('/api/products', {
     params: {
-      categoryId,
+      categoryId: categoryId.toString(),
       page,
       size,
       sort,
@@ -36,12 +27,13 @@ export const getProducts = async ({
   return data;
 };
 
-type Params = Pick<RequestParams, 'size' | 'categoryId' | 'sort'>;
+type Params = Omit<ProductsRequest, 'page'>;
+
 export const useGetProducts = ({
   categoryId,
   size = 10,
   sort = 'name,asc',
-}: Params): UseInfiniteQueryResult<InfiniteData<ProductsResponseData>> => {
+}: Params): UseInfiniteQueryResult<InfiniteData<ProductData[]>> => {
   return useInfiniteQuery({
     queryKey: ['products', categoryId, size, sort],
     queryFn: ({ pageParam = 0 }) => getProducts({ categoryId, page: pageParam, size, sort }),

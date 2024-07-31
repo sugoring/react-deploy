@@ -11,9 +11,8 @@ import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
-  categoryId: string;
+  categoryId: string | number;
 };
-
 export const CategoryProductsSection = ({ categoryId }: Props) => {
   const { data, isError, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useGetProducts({
@@ -22,8 +21,7 @@ export const CategoryProductsSection = ({ categoryId }: Props) => {
 
   if (isLoading) return <LoadingView />;
   if (isError) return <TextView>에러가 발생했습니다.</TextView>;
-  if (!data) return <></>;
-  if (data.pages[0].length <= 0) return <TextView>상품이 없어요.</TextView>;
+  if (!data || data.pages[0].length === 0) return <TextView>상품이 없어요.</TextView>;
 
   const flattenGoodsList = data.pages.flat();
 

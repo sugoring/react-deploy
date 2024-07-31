@@ -5,14 +5,14 @@ import type { CategoryData } from '@/types';
 // 모의 카테고리 데이터
 const mockCategories: CategoryData[] = [
   {
-    id: 91,
+    id: 1,
     name: '카테고리1',
     color: '#FF5733',
     imageUrl: 'https://example.com/category1.jpg',
     description: '카테고리1 설명',
   },
   {
-    id: 92,
+    id: 2,
     name: '카테고리2',
     color: '#33FF57',
     imageUrl: 'https://example.com/category2.jpg',
