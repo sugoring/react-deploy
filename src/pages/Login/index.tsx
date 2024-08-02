@@ -1,8 +1,9 @@
+// src/pages/Login/index.tsx
 import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useLoginQuery } from '@/api/hooks/useLogin';
+import { useLogin } from '@/api/hooks/useLogin';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
@@ -10,12 +11,10 @@ import { Spacing } from '@/components/common/layouts/Spacing';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { LoginResponse } from '@/types';
-import { authSessionStorage } from '@/utils/storage';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authCode, setAuthCode] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,40 +28,29 @@ export const LoginPage = () => {
   }, [location.state?.successMessage, navigate]);
 
   const onLoginSuccess = useCallback(
-    (data: LoginResponse) => {
-      authSessionStorage.set(data.token);
+    (_data: LoginResponse) => {
       navigate(RouterPath.home);
     },
     [navigate],
   );
 
   const {
-    refetch: login,
-    isLoading,
+    mutate: login,
+    isPending,
     error: loginError,
-  } = useLoginQuery(authCode, {
-    enabled: false,
+  } = useLogin({
+    onSuccess: onLoginSuccess,
   });
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!email || !password) {
       alert('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
-    // 여기서 이메일과 비밀번호를 사용하여 인증 코드를 얻는 로직이 필요합니다.
-    const code = 'sample_auth_code'; // 이 부분은 실제 인증 코드 획득 로직으로 대체해야 합니다.
-    setAuthCode(code);
-
-    try {
-      const result = await login();
-      if (result.data) {
-        onLoginSuccess(result.data);
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-    }
+    login({ email, password });
   };
+
   return (
     <Wrapper>
       <Logo src={KAKAO_LOGO} alt="카카오 CI" />
@@ -81,14 +69,15 @@ export const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Spacing height={{ initial: 40, sm: 60 }} />
-        <Button onClick={handleConfirm} disabled={isLoading}>
-          {isLoading ? '로그인 중...' : '로그인'}
+        <Button onClick={handleConfirm} disabled={isPending}>
+          {isPending ? '로그인 중...' : '로그인'}
         </Button>
         {loginError && <ErrorMessage>{loginError.message}</ErrorMessage>}
       </FormWrapper>
     </Wrapper>
   );
 };
+
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
