@@ -1,7 +1,6 @@
-// src/pages/Register/index.tsx
 import styled from '@emotion/styled';
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useRegister } from '@/api/hooks/useRegister';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
@@ -10,7 +9,6 @@ import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineText
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { LoginResponse } from '@/types';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -18,19 +16,14 @@ export const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-  const onRegisterSuccess = useCallback(
-    (_data: LoginResponse) => {
-      navigate(RouterPath.home);
-    },
-    [navigate],
-  );
-
   const {
     mutate: register,
     isPending,
-    error: registerError,
+    error,
   } = useRegister({
-    onSuccess: onRegisterSuccess,
+    onSuccess: () => {
+      navigate(RouterPath.home);
+    },
   });
 
   const handleRegister = () => {
@@ -74,7 +67,9 @@ export const RegisterPage = () => {
         <Button onClick={handleRegister} disabled={isPending}>
           {isPending ? '가입 중...' : '회원가입'}
         </Button>
-        {registerError && <ErrorMessage>{registerError.message}</ErrorMessage>}
+        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        <Spacing height={20} />
+        <LoginLink to={RouterPath.login}>이미 계정이 있으신가요? 로그인</LoginLink>
       </FormWrapper>
     </Wrapper>
   );
@@ -109,4 +104,16 @@ const ErrorMessage = styled.div`
   color: red;
   margin-top: 10px;
   text-align: center;
+`;
+
+const LoginLink = styled(Link)`
+  display: block;
+  text-align: center;
+  color: #1e1e1e;
+  text-decoration: none;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
