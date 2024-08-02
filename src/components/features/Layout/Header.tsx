@@ -1,13 +1,35 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
 
+const API_URLS = {
+  PROXY_1: process.env.REACT_APP_PROXY_1,
+  PROXY_2: process.env.REACT_APP_PROXY_2,
+  PROXY_3: process.env.REACT_APP_PROXY_3,
+};
+
 export const Header = () => {
   const navigate = useNavigate();
   const authInfo = useAuth();
+  const [selectedApi, setSelectedApi] = useState<string>('PROXY_1');
+
+  useEffect(() => {
+    const storedApi = localStorage.getItem('selectedApi');
+    if (storedApi && API_URLS[storedApi as keyof typeof API_URLS]) {
+      setSelectedApi(storedApi);
+    }
+  }, []);
+
+  const handleApiChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newApi = event.target.value;
+    setSelectedApi(newApi);
+    localStorage.setItem('selectedApi', newApi);
+    window.location.reload();
+  };
 
   const handleLogin = () => {
     navigate(getDynamicPath.login());
@@ -23,6 +45,13 @@ export const Header = () => {
           />
         </Link>
         <RightWrapper>
+          <Select value={selectedApi} onChange={handleApiChange}>
+            {Object.keys(API_URLS).map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+          </Select>
           {authInfo ? (
             <LinkButton onClick={() => navigate(RouterPath.myAccount)}>내 계정</LinkButton>
           ) : (
@@ -49,7 +78,11 @@ export const Wrapper = styled.header`
 const Logo = styled.img`
   height: ${HEADER_HEIGHT};
 `;
-const RightWrapper = styled.div``;
+
+const RightWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const LinkButton = styled.p`
   align-items: center;
@@ -57,4 +90,12 @@ const LinkButton = styled.p`
   color: #000;
   text-decoration: none;
   cursor: pointer;
+  margin-left: 16px;
+`;
+
+const Select = styled.select`
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 `;
