@@ -34,7 +34,7 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = process.env.REACT_APP_PROXY_2;
 export const fetchInstance = initInstance({
   baseURL: BASE_URL,
 });
@@ -49,13 +49,3 @@ export const queryClient = new QueryClient({
     },
   },
 });
-
-// 토큰 설정 함수 추가
-export const setAuthToken = (token: string) => {
-  fetchInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-// 토큰 제거 함수 추가
-export const removeAuthToken = () => {
-  delete fetchInstance.defaults.headers.common.Authorization;
-};
