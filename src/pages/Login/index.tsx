@@ -1,7 +1,6 @@
-// src/pages/Login/index.tsx
 import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // Link 추가
 
 import { useLogin } from '@/api/hooks/useLogin';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
@@ -73,6 +72,8 @@ export const LoginPage = () => {
           {isPending ? '로그인 중...' : '로그인'}
         </Button>
         {loginError && <ErrorMessage>{loginError.message}</ErrorMessage>}
+        <Spacing height={20} />
+        <RegisterLink to={RouterPath.register}>회원가입</RegisterLink>
       </FormWrapper>
     </Wrapper>
   );
@@ -113,4 +114,16 @@ const ErrorMessage = styled.div`
   color: red;
   margin-top: 10px;
   text-align: center;
+`;
+
+const RegisterLink = styled(Link)`
+  display: block;
+  text-align: center;
+  color: #1e1e1e;
+  text-decoration: none;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
