@@ -2,6 +2,7 @@ import { Divider } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 import { useProductDataQuery } from '@/api/hooks/useProductDetail';
+import { Image } from '@/components/common/Image';
 import { breakpoints } from '@/styles/variants';
 import type { ProductId } from '@/types';
 
@@ -14,7 +15,7 @@ export const GoodsDetailHeader = ({ productId }: { productId: ProductId }) => {
 
   return (
     <Wrapper>
-      <GoodsImage src={detail.imageUrl} alt={detail.name} />
+      <StyledImage src={detail.imageUrl} alt={detail.name} />
       <InfoWrapper>
         <Title>{detail.name}</Title>
         <Price>{detail.price}원</Price>
@@ -36,7 +37,8 @@ const Wrapper = styled.header`
   }
 `;
 
-const GoodsImage = styled.img`
+const StyledImage = styled(Image)`
+  // GoodsImage 대신 StyledImage로 변경
   width: 100%;
   max-width: 450px;
 `;
