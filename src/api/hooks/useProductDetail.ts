@@ -11,7 +11,10 @@ const fetchProductData = async (productId: ProductId): Promise<ProductData> => {
 
 export const useProductDataQuery = (
   { productId }: { productId: ProductId },
-  options?: Omit<UseQueryOptions<ProductData, Error, ProductData, ['ProductData', ProductId]>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ProductData, Error, ProductData, ['ProductData', ProductId]>,
+    'queryKey' | 'queryFn'
+  >,
 ): UseQueryResult<ProductData, Error> => {
   return useQuery({
     queryKey: ['ProductData', productId],

@@ -4,7 +4,7 @@ export type LoginResponse = {
   token: string;
 };
 
-// 카테고리 
+// 카테고리
 export type CategoryData = {
   id: number;
   name: string;
@@ -23,14 +23,13 @@ export type ProductData = {
   imageUrl: string;
   categoryId: number;
 };
- 
-  export type ProductsRequest = {
-    categoryId: string | number;
-    page?: number;
-    size?: number;
-    sort?: string;
-  };
 
+export type ProductsRequest = {
+  categoryId: string | number;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
 
 export type ProductOptionsData = {
   id: number;

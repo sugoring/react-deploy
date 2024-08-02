@@ -83,16 +83,16 @@ export const categoriesMockHandler = [
   rest.get('/api/categories', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(mockCategories));
   }),
-  
+
   // 개별 카테고리 조회 API 모킹 (추가)
   rest.get('/api/categories/:categoryId', (req, res, ctx) => {
     const { categoryId } = req.params;
-    const category = mockCategories.find(c => c.id === parseInt(categoryId as string, 10));
-    
+    const category = mockCategories.find((c) => c.id === parseInt(categoryId as string, 10));
+
     if (category) {
       return res(ctx.status(200), ctx.json(category));
     } else {
-      return res(ctx.status(404), ctx.json({ message: "Category not found" }));
+      return res(ctx.status(404), ctx.json({ message: 'Category not found' }));
     }
   }),
 ];
@@ -100,8 +100,8 @@ export const categoriesMockHandler = [
 // 테스트용 헬퍼 함수들
 export const getMockCategories = () => mockCategories;
 
-export const getMockCategory = (categoryId: number) => 
-  mockCategories.find(c => c.id === categoryId);
+export const getMockCategory = (categoryId: number) =>
+  mockCategories.find((c) => c.id === categoryId);
 
-export const getRandomMockCategory = () => 
+export const getRandomMockCategory = () =>
   mockCategories[Math.floor(Math.random() * mockCategories.length)];

@@ -13,7 +13,7 @@ export const useOrdersQuery = (page: number = 0, size: number = 10) => {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-      }
+      },
     );
     return data;
   };
@@ -30,15 +30,11 @@ export const useCreateOrderMutation = () => {
 
   return useMutation({
     mutationFn: (orderData: OrderFormData) =>
-      fetchInstance.post<OrderHistory>(
-        '/api/orders',
-        orderData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      ),
+      fetchInstance.post<OrderHistory>('/api/orders', orderData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },

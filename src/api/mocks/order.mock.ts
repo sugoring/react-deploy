@@ -20,16 +20,13 @@ export const orderHandlers = [
     const startIndex = page * size;
     const endIndex = startIndex + size;
     const paginatedOrders = mockOrders.slice(startIndex, endIndex);
-    
-    return res(
-      ctx.status(200),
-      ctx.json(paginatedOrders)
-    );
+
+    return res(ctx.status(200), ctx.json(paginatedOrders));
   }),
 
   // 주문 생성
   rest.post('/api/orders', async (req, res, ctx) => {
-    const orderData = await req.json() as OrderFormData;
+    const orderData = (await req.json()) as OrderFormData;
     const newOrder: OrderHistory = {
       id: Math.floor(Math.random() * 1000) + 100,
       optionId: orderData.productId,
@@ -37,29 +34,19 @@ export const orderHandlers = [
     };
     mockOrders.push(newOrder);
 
-    return res(
-      ctx.status(201),
-      ctx.json(newOrder)
-    );
+    return res(ctx.status(201), ctx.json(newOrder));
   }),
 
   // 주문 취소
   rest.delete('/api/orders/:orderId', (req, res, ctx) => {
     const { orderId } = req.params;
-    const orderIndex = mockOrders.findIndex(order => order.id === Number(orderId));
-    
+    const orderIndex = mockOrders.findIndex((order) => order.id === Number(orderId));
+
     if (orderIndex !== -1) {
       mockOrders.splice(orderIndex, 1);
-      return res(
-        ctx.status(200),
-        ctx.json({ message: `Order ${orderId} has been cancelled.` })
-      );
+      return res(ctx.status(200), ctx.json({ message: `Order ${orderId} has been cancelled.` }));
     } else {
-      return res(
-        ctx.status(404),
-        ctx.json({ message: `Order ${orderId} not found.` })
-      );
+      return res(ctx.status(404), ctx.json({ message: `Order ${orderId} not found.` }));
     }
   }),
 ];
-

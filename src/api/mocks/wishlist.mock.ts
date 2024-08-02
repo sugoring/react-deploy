@@ -31,10 +31,7 @@ export const wishlistMockHandlers = [
     const start = parseInt(page, 10) * parseInt(size, 10);
     const end = start + parseInt(size, 10);
 
-    return res(
-      ctx.status(200),
-      ctx.json(mockWishlist.slice(start, end)),
-    );
+    return res(ctx.status(200), ctx.json(mockWishlist.slice(start, end)));
   }),
 
   // 위시 리스트에 상품 추가
@@ -51,24 +48,18 @@ export const wishlistMockHandlers = [
     };
     mockWishlist.push(newWish);
 
-    return res(
-      ctx.status(201),
-      ctx.json({ productId }),
-    );
+    return res(ctx.status(201), ctx.json({ productId }));
   }),
 
   // 위시 리스트에서 상품 제거
   rest.delete('/api/wishes/:id', (req, res, ctx) => {
     const { id } = req.params;
-    const index = mockWishlist.findIndex(wish => wish.id === parseInt(id as string, 10));
+    const index = mockWishlist.findIndex((wish) => wish.id === parseInt(id as string, 10));
 
     if (index !== -1) {
       mockWishlist.splice(index, 1);
     }
 
-    return res(
-      ctx.status(200),
-      ctx.json({}),
-    );
+    return res(ctx.status(200), ctx.json({}));
   }),
 ];
